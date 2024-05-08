@@ -1,6 +1,6 @@
 var mongoose = require("mongoose")
 
-const {DB_HOST, DB_PORT, DB_NAME} = require("../helpers/config")
+const {DB_HOST, DB_PORT, DB_NAME} = require("./config")
 const mongoDBUrl = `mongodb://${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
 mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true })

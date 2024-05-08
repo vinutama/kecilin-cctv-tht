@@ -11,7 +11,7 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 // connect Mongo DB
-require("./db")
+require("./db");
 
 app.use(logger('dev'));
 app.use(express.json());
