@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  db:
+    container_name: mongo-db
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    env_file:
+      - db.env
+    volumes:
+      - ./mongo_db:/data/db
+    networks:
+      - kecilin
+  
+  web:
+    build: .
+    container_name: kecilin-cctv
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - app.env
+    networks:
+      - kecilin
+
+networks:
+  kecilin:
+    external: true
+
+
+      
