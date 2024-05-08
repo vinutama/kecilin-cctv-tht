@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
+const {bcryptSalt, validRoles} = require("../helpers/utils");
 
 const UserSchema = new Schema({
     name: {
@@ -35,11 +36,12 @@ const UserSchema = new Schema({
     role: {
         type: String,
         default: 'User',
+        enum: validRoles
     }
 });
 
 UserSchema.pre('save', function (next) {
-    const salt = bcrypt.genSaltSync(process.env.BCRYPT_SALT);
+    const salt = bcrypt.genSaltSync(bcryptSalt);
     this.password = bcrypt.hashSync(this.password, salt);
     next();
 });
