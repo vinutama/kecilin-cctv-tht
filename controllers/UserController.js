@@ -4,7 +4,7 @@ const { verifyPassword, generateToken } = require('../helpers')
 module.exports = {
     add: function (req, res) {
         if (!req.body || Object.keys(req.body).length === 0) {
-            return res.status(400).json({ message: "Request body is empty" });
+            res.status(400).json({ message: "Request body is empty" });
         }
 
         let newUser = {name, username, password, role} = req.body;

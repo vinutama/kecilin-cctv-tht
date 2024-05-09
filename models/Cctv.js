@@ -11,20 +11,20 @@ const CctvSchema = new Schema({
         type: String,
         required: [true, "Area must be filled"],
     },
-    ip_address: {
+    ipAddress: {
         type: String,
         required: [true, "Ip address must be filled"],
-        validator: async function (ip_address) {
+        validator: async function (ipAddress) {
             const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
-            let validIp = ipv4Regex.test(ip_address);
+            let validIp = ipv4Regex.test(ipAddress);
             if (!validIp) {
                 throw new Error('IP address invalid must have format IPv4');
             }
             return validIp;
         },
-        validator: async function (ip_address) {
-            const foundIp = await Cctv.findOne({ip_address, _id: {$ne: this._id}});
+        validator: async function (ipAddress) {
+            const foundIp = await Cctv.findOne({ipAddress, _id: {$ne: this._id}});
             if (foundIp) {
                 throw new Error('IP address already used');
             }
@@ -38,6 +38,10 @@ const CctvSchema = new Schema({
     },
     notes: {
         type: String,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

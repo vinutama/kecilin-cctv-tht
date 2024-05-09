@@ -84,5 +84,19 @@ module.exports = {
                     res.status(500).json({message: err.message})
                 }
             })
-    }
+    },
+    delete: function(req, res) {
+        Cctv
+            .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
+            .then((cctv) => {
+                if (cctv) {
+                    res.status(200).json({message: "CCTV removed", data: cctv});
+                } else {
+                    res.status(404).json({message: "CCTV not found"});
+                }
+            })
+            .catch((err) => {
+                res.status(500).json({message: err.message});
+            })
+    }       
 };
