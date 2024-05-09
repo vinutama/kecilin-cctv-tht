@@ -124,7 +124,7 @@ module.exports = {
             .findOne({_id: req.params.id})
             .then((cctv) => {
                 if (cctv) {
-                    if (cctv.status === 'Inactive') {
+                    if (cctv.status === 'inactive') {
                         return Cctv
                                 .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
                     } else {

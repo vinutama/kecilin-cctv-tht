@@ -13,7 +13,7 @@ module.exports = {
                     name: 'admin',
                     username: ADMIN_USER,
                     password: ADMIN_PASS,
-                    role: "Admin"
+                    role: "admin"
                 });
     
                 await newUser.save();

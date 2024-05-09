@@ -15,7 +15,7 @@ var app = express();
 require("./db");
 
 // create admin user
-const {createAdminUser } = require('./helpers');
+const { createAdminUser } = require('./helpers');
 createAdminUser();
 
 app.use(logger('dev'));

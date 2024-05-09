@@ -38,7 +38,7 @@ const CctvSchema = new Schema({
     },
     status: {
         type: String,
-        default: "Inactive",
+        default: "inactive",
         enum: validCctvStatus
     },
     notes: {

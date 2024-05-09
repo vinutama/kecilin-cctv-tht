@@ -35,7 +35,7 @@ module.exports = {
         }
     },
     isAdmin: function(req, res, next) {
-        if (req.currentUser.role === 'Admin') {
+        if (req.currentUser.role === 'admin') {
             next();
         } else {
             res.status(401).json({
@@ -45,7 +45,7 @@ module.exports = {
     },
     isMaintainer: function(req, res, next) {
         let role = req.currentUser.role
-        if (role === 'Admin' || role || 'Maintainer') {
+        if (role === 'admin' || role || 'maintainer') {
             next();
         } else {
             res.status(401).json({
