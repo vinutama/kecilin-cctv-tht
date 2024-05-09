@@ -27,7 +27,6 @@ const CctvSchema = new Schema({
             },
             {
                 validator: async function (ipAddress) {
-                    console.log("DSINI KAH>")
                     const foundIp = await Cctv.findOne({ipAddress, _id: {$ne: this._id}});
                     if (foundIp) {
                         throw new Error('IP address already used');

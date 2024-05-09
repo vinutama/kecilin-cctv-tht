@@ -31,7 +31,7 @@ module.exports = {
     },
     findAll: function(req, res) {
         // by default we search when isDeleted false or not 'soft' deleted 
-        const filters = {isDeleted: false};
+        let filters = {isDeleted: false};
         let sortOptions = {createdAt: -1};
         const page = parseInt(req.query.offset) || 1;
         const pageLimit = parseInt(req.query.limit) || 5;
@@ -55,6 +55,7 @@ module.exports = {
             }
         }
 
+        const sort = req.query.sort;
         if(sort) {
             const sortMod = sort === 'asc' ? 1 : sort === 'desc' ? -1 : -1;
             sortOptions.createdAt = sortMod;
@@ -110,8 +111,8 @@ module.exports = {
                     badReqErr.json({message: err.model.message})
                 } else if (err.hasOwnProperty('area')) {
                     badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ip_address')) {
-                    badReqErr.json({message: err.ip_address.message})
+                } else if (err.hasOwnProperty('ipAddress')) {
+                    badReqErr.json({message: err.ipAddress.message})
                 } else if (err.hasOwnProperty('status')) {
                     badReqErr.json({message: err.status.message})
                 } else {
