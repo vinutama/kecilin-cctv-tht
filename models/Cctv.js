@@ -14,22 +14,28 @@ const CctvSchema = new Schema({
     ipAddress: {
         type: String,
         required: [true, "Ip address must be filled"],
-        validator: async function (ipAddress) {
-            const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-            let validIp = ipv4Regex.test(ipAddress);
-            if (!validIp) {
-                throw new Error('IP address invalid must have format IPv4');
+        validate: [
+            {
+                validator: async function (ipAddress) {
+                    const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+                    let validIp = await ipv4Regex.test(ipAddress);
+                    if (!validIp) {
+                            throw new Error('IP address invalid must have format IPv4');
+                        }
+                        return true;
+                }
+            },
+            {
+                validator: async function (ipAddress) {
+                    console.log("DSINI KAH>")
+                    const foundIp = await Cctv.findOne({ipAddress, _id: {$ne: this._id}});
+                    if (foundIp) {
+                        throw new Error('IP address already used');
+                    }
+                    return true;
+                }
             }
-            return validIp;
-        },
-        validator: async function (ipAddress) {
-            const foundIp = await Cctv.findOne({ipAddress, _id: {$ne: this._id}});
-            if (foundIp) {
-                throw new Error('IP address already used');
-            }
-            return true;
-        }
+        ],        
     },
     status: {
         type: String,

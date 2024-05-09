@@ -6,11 +6,12 @@ module.exports = {
             return res.status(400).json({ message: "Request body is empty" });
         }
 
-        let newCctv = {model, area, ip_address, status} = req.body;
+        let newCctv = {model, area, ipAddress, status} = req.body;
         Cctv
             .create(newCctv)
             .then((cctv) => {
-                res.status(201).json({message: "Success add new CCTV", data: cctv});
+                const resp = {model, area, ipAddress, status, createdAt, updatedAt} = cctv
+                res.status(201).json({message: "Success add new CCTV", data: resp});
             })
             .catch((err) => {
                 err = err.errors;
@@ -19,8 +20,8 @@ module.exports = {
                     badReqErr.json({message: err.model.message})
                 } else if (err.hasOwnProperty('area')) {
                     badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ip_address')) {
-                    badReqErr.json({message: err.ip_address.message})
+                } else if (err.hasOwnProperty('ipAddress')) {
+                    badReqErr.json({message: err.ipAddress.message})
                 } else if (err.hasOwnProperty('status')) {
                     badReqErr.json({message: err.status.message})
                 } else {
