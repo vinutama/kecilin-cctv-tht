@@ -11,7 +11,11 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 // connect Mongo DB
-require("./db")
+require("./db");
+
+// create admin user
+const {createAdminUser } = require('./helpers');
+createAdminUser();
 
 app.use(logger('dev'));
 app.use(express.json());

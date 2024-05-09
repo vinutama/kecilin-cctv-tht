@@ -1,8 +1,8 @@
 var mongoose = require("mongoose")
 
-const {DB_HOST, DB_PORT, DB_NAME} = require("../helpers/config")
-const mongoDBUrl = `mongodb://${DB_HOST}:${DB_PORT}/${DB_NAME}`
+const {DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD} = process.env
+const mongoDBUrl = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
-mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoDBUrl)
   .then(() => console.log('Connected to MongoDB'))
   .catch(error => console.error('MongoDB connection error:', error));

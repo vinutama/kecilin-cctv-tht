@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
+const UserController = require('../controllers/UserController');
+const { authenticate, isAdmin } = require('../middlewares');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resourcesss');
-});
 
+// user API
+router.post('/login', UserController.login);
+
+// middlewares
+router.use(authenticate);
+
+router.post('/', isAdmin, UserController.add);
 module.exports = router;
