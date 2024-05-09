@@ -122,10 +122,20 @@ module.exports = {
     },
     delete: function(req, res) {
         Cctv
-            .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
+            .findOne({_id: req.params.id})
             .then((cctv) => {
                 if (cctv) {
-                    res.status(200).json({message: "CCTV removed", data: cctv});
+                    if (cctv.status === 'Inactive') {
+                        return Cctv
+                                .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
+                    } else {
+                        res.status(400).json({message: "Cannot delete CCTV that still active"});
+                    } 
+                }
+            })
+            .then((removedCctv) => {
+                if (removedCctv) {
+                    res.status(200).json({message: "CCTV removed", data: removedCctv});
                 } else {
                     res.status(404).json({message: "CCTV not found"});
                 }
