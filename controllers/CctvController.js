@@ -37,7 +37,6 @@ module.exports = {
         const pageLimit = parseInt(req.query.limit) || 5;
 
         const filterMapper = {
-            id: {field: "_id", caseInsensitive: false},
             model: {field: "model", caseInsensitive: true},
             area: {field: "area", caseInsensitive: true},
             status: {field: "status", caseInsensitive: false},
