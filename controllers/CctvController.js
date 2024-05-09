@@ -29,14 +29,47 @@ module.exports = {
             })
     },
     findAll: function(req, res) {
+        // by default we search when isDeleted false or not 'soft' deleted 
+        const filters = {isDeleted: false};
+        let sortOptions = {createdAt: -1};
+        const page = parseInt(req.query.offset) || 1;
+        const pageLimit = parseInt(req.query.limit) || 5;
+
+        const filterMapper = {
+            id: {field: "_id", caseInsensitive: false},
+            model: {field: "model", caseInsensitive: true},
+            area: {field: "area", caseInsensitive: true},
+            status: {field: "status", caseInsensitive: false},
+            ip: {field: "ipAddress", caseInsensitive: true},
+        }
+        for (const filter in filterMapper) {
+            const {field, caseInsensitive} = filterMapper[filter];
+            const paramVal = req.query[filter];
+            if (paramVal) {
+                if (caseInsensitive) {
+                    filters[field] = {$regex: paramVal, $options: "i"};
+                } else {
+                    filters[field] = paramVal;
+                }
+            }
+        }
+
+        if(sort) {
+            const sortMod = sort === 'asc' ? 1 : sort === 'desc' ? -1 : -1;
+            sortOptions.createdAt = sortMod;
+        }
+
         Cctv
-        .find({})
-        .then((cctvs) => {
-            res.status(200).json({message: "CCTVs retrieved", data: cctvs});
-        })
-        .catch((err) => {
-            res.status(500).json({message: err.message});
-        })
+            .find(filters)
+            .sort(sortOptions)
+            .skip((page - 1) * pageLimit)
+            .limit(pageLimit)
+            .then((cctvs) => {
+                res.status(200).json({message: "CCTVs retrieved", data: cctvs});
+            })
+            .catch((err) => {
+                res.status(500).json({message: err.message});
+            })
     },
     findOne: function (req, res) {
         Cctv
