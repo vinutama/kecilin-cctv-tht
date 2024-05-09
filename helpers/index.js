@@ -1,5 +1,7 @@
 const User = require('../models/User');
-const { ADMIN_USER, ADMIN_PASS} = require('./utils');
+const { ADMIN_USER, ADMIN_PASS, JWT_SECRET} = require('./utils');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
     // create admin user
@@ -21,5 +23,14 @@ module.exports = {
         } catch (err) {
             console.error('Error when creating admin user: ', err);
         }   
+    },
+    generateToken: function(user) {
+        return jwt.sign(user, JWT_SECRET, {expiresIn: '1h'});
+    },
+    verifyToken: function(token) {
+        return jwt.verify(token, JWT_SECRET);
+    },
+    verifyPassword: function(pass, hashedPass) {
+        return bcrypt.compareSync(pass, hashedPass);
     }
 }
