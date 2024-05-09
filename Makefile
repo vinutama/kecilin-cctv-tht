@@ -22,7 +22,7 @@ prune:
 cnetwork:
 	docker network create kecilin
 
-hard-restart:
+fresh-start:
 	make down && \
 	make prune && \
 	make build && \

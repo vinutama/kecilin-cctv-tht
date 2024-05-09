@@ -1,10 +1,11 @@
 
 const validRoles = ['Admin', 'Maintainer', 'User'];
-const bcryptSalt = process.env.BCRYPT_SALT;
-const jwtSecret = process.env.JWT_SECRET;
+const {BCRYPT_SALT, JWT_SECRET, ADMIN_USER, ADMIN_PASS} = process.env;
 
 module.exports = {
     validRoles,
-    bcryptSalt,
-    jwtSecret
+    BCRYPT_SALT,
+    JWT_SECRET,
+    ADMIN_USER,
+    ADMIN_PASS
 };

@@ -13,6 +13,10 @@ var app = express();
 // connect Mongo DB
 require("./db");
 
+// create admin user
+const {createAdminUser } = require('./helpers');
+createAdminUser();
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
