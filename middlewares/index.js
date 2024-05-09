@@ -3,7 +3,7 @@ const { verifyToken } = require('../helpers');
 
 module.exports = {
     authenticate: function(req, res, next) {
-        let token = req.headers.token
+        let token = req.headers.authorization;
         if(token) {
             let decoded = verifyToken(token);
             User

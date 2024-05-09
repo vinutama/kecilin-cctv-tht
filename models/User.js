@@ -12,19 +12,13 @@ const UserSchema = new Schema({
         type: String,
         required: [true, "Username must be filled"],
         validate: {
-            validator: function (username) {
-                return new Promise((resolve, reject) => {
-                    User
-                        .findOne({ username, _id: {$ne: this._id}})
-                        .then(found => {
-                            if(found) {
-                                reject(false)
-                            } else {
-                                resolve(true)
-                            }
-                        })
-                })
-            }, msg: 'Username already exists'
+            validator: async function (username) {
+                const foundUser = await User.findOne({username, _id: {$ne: this._id}});
+                if (foundUser) {
+                    throw new Error('Username already exists');
+                }
+                return true;
+            }
         }
     },
     password: {

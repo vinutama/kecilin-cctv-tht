@@ -31,6 +31,10 @@ module.exports = {
         return jwt.verify(token, JWT_SECRET);
     },
     verifyPassword: function(pass, hashedPass) {
-        return bcrypt.compareSync(pass, hashedPass);
+        try {
+            return bcrypt.compareSync(pass, hashedPass);
+        } catch (error) {
+            return false;
+        }
     }
 }
