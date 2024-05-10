@@ -1,7 +1,7 @@
 
 const validRoles = ['admin', 'maintainer', 'user'];
 const validCctvStatus = ['active', 'inactive'];
-const validActStatus = ['investigate', 'suspicious', 'criminal_detected', 'clear'];
+const validReportStatus = ['investigate', 'suspicious', 'criminal_detected', 'clear'];
 const {BCRYPT_SALT, JWT_SECRET, ADMIN_USER, ADMIN_PASS} = process.env;
 
 module.exports = {
@@ -10,5 +10,6 @@ module.exports = {
     JWT_SECRET,
     ADMIN_USER,
     ADMIN_PASS,
-    validCctvStatus
+    validCctvStatus,
+    validReportStatus
 };

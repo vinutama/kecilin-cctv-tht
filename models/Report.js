@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { validActStatus } = require("../helpers/utils");
+const { validReportStatus } = require("../helpers/utils");
 
-const ActivitySchema = new Schema({
+const ReportSchema = new Schema({
     cctv: {
         type: Schema.Types.ObjectId, ref: `Cctv`
+    },
+    owner: {
+        type: Schema.Types.ObjectId, ref: `User`
     },
     description: {
         type: String,
@@ -12,10 +15,10 @@ const ActivitySchema = new Schema({
     status: {
         type: String,
         default: "investigate",
-        enum: validActStatus
+        enum: validReportStatus
     }
 }, { timestamps: true });
 
-const Activity = mongoose.model('Activity', ActivitySchema);
+const Report = mongoose.model('Report', ReportSchema);
 
-module.exports = Activity;
+module.exports = Report;
