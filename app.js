@@ -32,7 +32,7 @@ app.use('/api/reports', reportRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.status(404).json({ message: "URL not found" });
 });
 
 // error handler

@@ -11,21 +11,21 @@ module.exports = {
             .create(newCctv)
             .then((cctv) => {
                 const resp = {model, area, ipAddress, status, createdAt, updatedAt} = cctv
-                res.status(201).json({message: "Success add new CCTV", data: resp});
+                return res.status(201).json({message: "Success add new CCTV", data: resp});
             })
             .catch((err) => {
                 const customErr = err.errors;
                 const badReqErr = res.status(400);
                 if (customErr.hasOwnProperty('model')) {
-                    badReqErr.json({message: customErr.model.message})
+                    return badReqErr.json({message: customErr.model.message})
                 } else if (customErr.hasOwnProperty('area')) {
-                    badReqErr.json({message: customErr.area.message})
+                    return badReqErr.json({message: customErr.area.message})
                 } else if (customErr.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: customErr.ipAddress.message})
+                    return badReqErr.json({message: customErr.ipAddress.message})
                 } else if (customErr.hasOwnProperty('status')) {
-                    badReqErr.json({message: customErr.status.message})
+                    return badReqErr.json({message: customErr.status.message})
                 } else {
-                    res.status(500).json({message: err.message})
+                    return res.status(500).json({message: err.message})
                 }
             })
     },
@@ -66,10 +66,10 @@ module.exports = {
             .skip((page - 1) * pageLimit)
             .limit(pageLimit)
             .then((cctvs) => {
-                res.status(200).json({message: "CCTVs retrieved", data: cctvs});
+                return res.status(200).json({message: "CCTVs retrieved", data: cctvs});
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     },
     findOne: function (req, res) {
@@ -77,15 +77,15 @@ module.exports = {
             .findOne({_id: req.params.id})
             .then((cctv) => {
                 if (cctv) {
-                    res.status(200).json({message: "CCTV retrieved", data: cctv});
+                    return res.status(200).json({message: "CCTV retrieved", data: cctv});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "CCTV not found"
                     });
                 }
             })
             .catch((err) => {
-                res.status(500).json({
+                return res.status(500).json({
                     message: err.message
                 });
             })
@@ -96,9 +96,9 @@ module.exports = {
             .findOneAndUpdate({_id: req.params.id}, editCctv, {new: true, runValidators: true})
             .then((cctv) => {
                 if (cctv) {
-                    res.status(200).json({message: "Success edit CCTV", data: cctv});
+                    return res.status(200).json({message: "Success edit CCTV", data: cctv});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "CCTV not found"
                     });
                 }
@@ -107,15 +107,15 @@ module.exports = {
                 const customErr = err.errors;
                 const badReqErr = res.status(400);
                 if (customErr.hasOwnProperty('model')) {
-                    badReqErr.json({message: customErr.model.message})
+                    return badReqErr.json({message: customErr.model.message})
                 } else if (customErr.hasOwnProperty('area')) {
-                    badReqErr.json({message: customErr.area.message})
+                    return badReqErr.json({message: customErr.area.message})
                 } else if (customErr.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: customErr.ipAddress.message})
+                    return badReqErr.json({message: customErr.ipAddress.message})
                 } else if (customErr.hasOwnProperty('status')) {
-                    badReqErr.json({message: customErr.status.message})
+                    return badReqErr.json({message: customErr.status.message})
                 } else {
-                    res.status(500).json({message: err.message})
+                    return res.status(500).json({message: err.message})
                 }
             })
     },
@@ -128,19 +128,19 @@ module.exports = {
                         return Cctv
                                 .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
                     } else {
-                        res.status(400).json({message: "Cannot delete CCTV that still active"});
+                        return res.status(400).json({message: "Cannot delete CCTV that still active"});
                     } 
                 }
             })
             .then((removedCctv) => {
                 if (removedCctv) {
-                    res.status(200).json({message: "CCTV removed", data: removedCctv});
+                    return res.status(200).json({message: "CCTV removed", data: removedCctv});
                 } else {
-                    res.status(404).json({message: "CCTV not found"});
+                    return res.status(404).json({message: "CCTV not found"});
                 }
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     }       
 };

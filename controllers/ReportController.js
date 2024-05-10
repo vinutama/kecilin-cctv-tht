@@ -4,7 +4,7 @@ const Cctv = require('../models/Cctv');
 module.exports = {
     add: function (req, res) {
         if (!req.body || Object.keys(req.body).length === 0) {
-            res.status(400).json({ message: "Request body is empty" });
+            return res.status(400).json({ message: "Request body is empty" });
         }
 
         let newReport = {
@@ -20,7 +20,7 @@ module.exports = {
                     return Report
                                 .create(newReport)
                 } else {
-                    res.message(404).json({
+                    return res.message(404).json({
                         message: `CCTV does not exist`
                     });
                 }
@@ -31,15 +31,15 @@ module.exports = {
                         .findOneAndUpdate({_id: req.params.cctvId}, {$push: {reports: report._id}}, {new: true});
             })
             .then((result) => {
-                res.status(201).json({message: "Success add report", data: reportRow});
+                return res.status(201).json({message: "Success add report", data: reportRow});
             })
             .catch((err) => {
                 err = err.errors;
                 
                 if (err.hasOwnProperty('status')) {
-                    res.status(400).json({message: err.status.message});
+                    return res.status(400).json({message: err.status.message});
                 } else {
-                    res.status(500).json({message: err.message});
+                    return res.status(500).json({message: err.message});
                 }
             })
     },
@@ -91,12 +91,12 @@ module.exports = {
 
             .then((cctv) => {
                 if (!cctv) {
-                    res.status(404).json({message: "CCTV does not exist"});
+                    return res.status(404).json({message: "CCTV does not exist"});
                 }
-                res.status(200).json({message: "Reports retrieved", data: cctv.reports});
+                return res.status(200).json({message: "Reports retrieved", data: cctv.reports});
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     },
     findOne: function(req, res) {
@@ -104,15 +104,15 @@ module.exports = {
             .findOne({_id: req.params.id})
             .then((report) => {
                 if (report) {
-                    res.status(200).json({message: "Report retrieved", data: report});
+                    return res.status(200).json({message: "Report retrieved", data: report});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "Report does not exist"
                     });
                 }
             })
             .catch((err) => {
-                res.status(500).json({
+                return res.status(500).json({
                     message: err.message
                 });
             })
@@ -123,9 +123,9 @@ module.exports = {
             .findOneAndUpdate({_id: req.params.id}, editReport, {new: true, runValidators: true})
             .then((report) => {
                 if (report) {
-                    res.status(200).json({message: "Success edit Report", data: report});
+                    return res.status(200).json({message: "Success edit Report", data: report});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "Report not found"
                     });
                 }
@@ -134,9 +134,9 @@ module.exports = {
                 customErr = err.errors;
                 badReqErr = res.status(400);
                 if (err.hasOwnProperty('status')) {
-                    res.status(400).json({message: customErr.status.message})
+                    return res.status(400).json({message: customErr.status.message})
                 } else {
-                    res.status(500).json({message: err.message})
+                    return res.status(500).json({message: err.message})
                 }
             })
     },
@@ -149,7 +149,7 @@ module.exports = {
                     return Cctv
                         .findOneAndUpdate({_id: req.currentUser._id}, {$pull: {reports: reportId}}, {new: true})
                 } else {
-                    res.status(404).json({message: "Report does not exist"});
+                    return res.status(404).json({message: "Report does not exist"});
                 }
             })
             .then((cctv) => {
@@ -159,7 +159,7 @@ module.exports = {
                 return res.status(200).json({message: "Delete report success"})
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     }
 }
