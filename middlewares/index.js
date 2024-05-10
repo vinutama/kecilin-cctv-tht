@@ -19,18 +19,18 @@ module.exports = {
                         };
                         next();
                     } else {
-                        res.status(401).json({
+                        return res.status(401).json({
                             message: 'Token expired'
                         })
                     }
                 })
                 .catch((err) => {
-                    res.status(500).json({
+                    return res.status(500).json({
                         message: err.message
                     })
                 })
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Missing token'
             })
         }
@@ -39,7 +39,7 @@ module.exports = {
         if (req.currentUser.role == 'superadmin') {
             next();
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Only Super Admin can perform this action'
             });
         }
@@ -48,7 +48,7 @@ module.exports = {
         if (req.currentUser.role == 'superadmin' || req.currentUser.role === 'admin') {
             next();
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Only Admin can perform this action'
             });
         }
@@ -64,11 +64,11 @@ module.exports = {
                     if(owner) {
                         next();
                     } else {
-                        res.status(401).json({message: "You don't have permission to perform this action"});
+                        return res.status(401).json({message: "You don't have permission to perform this action"});
                     }
                 })
                 .catch((err) => {
-                    res.status(500).json({
+                    return res.status(500).json({
                         message: err.message
                     })
                 })
