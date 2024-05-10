@@ -165,8 +165,8 @@ requestBody = {
   role: String,
   /*
   validation:
-      - optional by default: "user"
-      - if provided, validate ENUM ("admin", "maintainer", "user")
+      - optional by default: "maintainer"
+      - if provided, validate ENUM ("admin", "maintainer")
   */
 };
 

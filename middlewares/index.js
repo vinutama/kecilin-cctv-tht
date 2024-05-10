@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const { verifyToken } = require('../helpers');
+const Report = require('../models/Report');
 
 module.exports = {
     authenticate: function(req, res, next) {
@@ -25,7 +26,7 @@ module.exports = {
                 })
                 .catch((err) => {
                     res.status(500).json({
-                        message: `Internal server error ${err}`
+                        message: err.message
                     })
                 })
         } else {
@@ -34,8 +35,17 @@ module.exports = {
             })
         }
     },
+    isSuperAdmin: function(req, res, next) {
+        if (req.currentUser.role == 'superadmin') {
+            next();
+        } else {
+            res.status(401).json({
+                message: 'Only Super Admin can perform this action'
+            });
+        }
+    },
     isAdmin: function(req, res, next) {
-        if (req.currentUser.role === 'admin') {
+        if (req.currentUser.role == 'superadmin' || req.currentUser.role === 'admin') {
             next();
         } else {
             res.status(401).json({
@@ -43,15 +53,27 @@ module.exports = {
             });
         }
     },
-    isMaintainer: function(req, res, next) {
-        let role = req.currentUser.role
-        if (role === 'admin' || role || 'maintainer') {
+    isReportOwner: function(req, res, next) {
+        let role = req.currentUser.role;
+        if (role === 'superadmin') {
             next();
         } else {
-            res.status(401).json({
-                message: `You don't have Maintainer role to perform this action`
-            })
+            Report
+                .findOne({owner: req.currentUser._id})
+                .then((owner) => {
+                    if(owner) {
+                        next();
+                    } else {
+                        res.status(401).json({message: "You don't have permission to perform this action"});
+                    }
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        message: err.message
+                    })
+                })
         }
+
     }
 
 }

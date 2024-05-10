@@ -47,7 +47,12 @@ const CctvSchema = new Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
+    },
+    reports: [
+        {
+            type: Schema.Types.ObjectId, ref: `Report`
+        }
+    ]
 }, { timestamps: true });
 
 const Cctv = mongoose.model('Cctv', CctvSchema);

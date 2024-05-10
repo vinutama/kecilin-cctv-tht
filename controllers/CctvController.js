@@ -14,16 +14,16 @@ module.exports = {
                 res.status(201).json({message: "Success add new CCTV", data: resp});
             })
             .catch((err) => {
-                err = err.errors;
-                badReqErr = res.status(400);
-                if (err.hasOwnProperty('model')) {
-                    badReqErr.json({message: err.model.message})
-                } else if (err.hasOwnProperty('area')) {
-                    badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: err.ipAddress.message})
-                } else if (err.hasOwnProperty('status')) {
-                    badReqErr.json({message: err.status.message})
+                const customErr = err.errors;
+                const badReqErr = res.status(400);
+                if (customErr.hasOwnProperty('model')) {
+                    badReqErr.json({message: customErr.model.message})
+                } else if (customErr.hasOwnProperty('area')) {
+                    badReqErr.json({message: customErr.area.message})
+                } else if (customErr.hasOwnProperty('ipAddress')) {
+                    badReqErr.json({message: customErr.ipAddress.message})
+                } else if (customErr.hasOwnProperty('status')) {
+                    badReqErr.json({message: customErr.status.message})
                 } else {
                     res.status(500).json({message: err.message})
                 }
@@ -81,7 +81,7 @@ module.exports = {
                 } else {
                     res.status(404).json({
                         message: "CCTV not found"
-                    })
+                    });
                 }
             })
             .catch((err) => {
@@ -104,16 +104,16 @@ module.exports = {
                 }
             })
             .catch((err) => {
-                err = err.errors;
-                badReqErr = res.status(400);
-                if (err.hasOwnProperty('model')) {
-                    badReqErr.json({message: err.model.message})
-                } else if (err.hasOwnProperty('area')) {
-                    badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: err.ipAddress.message})
-                } else if (err.hasOwnProperty('status')) {
-                    badReqErr.json({message: err.status.message})
+                const customErr = err.errors;
+                const badReqErr = res.status(400);
+                if (customErr.hasOwnProperty('model')) {
+                    badReqErr.json({message: customErr.model.message})
+                } else if (customErr.hasOwnProperty('area')) {
+                    badReqErr.json({message: customErr.area.message})
+                } else if (customErr.hasOwnProperty('ipAddress')) {
+                    badReqErr.json({message: customErr.ipAddress.message})
+                } else if (customErr.hasOwnProperty('status')) {
+                    badReqErr.json({message: customErr.status.message})
                 } else {
                     res.status(500).json({message: err.message})
                 }

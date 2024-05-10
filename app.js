@@ -8,15 +8,16 @@ require("dotenv").config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var cctvRouter = require('./routes/cctv');
+var reportRouter = require('./routes/reports');
 
 var app = express();
 
 // connect Mongo DB
 require("./db");
 
-// create admin user
-const { createAdminUser } = require('./helpers');
-createAdminUser();
+// create superadmin user
+const { createSuperAdminUser } = require('./helpers');
+createSuperAdminUser();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/cctv', cctvRouter);
+app.use('/api/reports', reportRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
