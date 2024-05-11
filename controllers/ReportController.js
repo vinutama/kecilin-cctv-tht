@@ -1,5 +1,6 @@
 const Report = require('../models/Report');
 const Cctv = require('../models/Cctv');
+const moment = require('moment');
 
 module.exports = {
     add: function (req, res) {
@@ -67,8 +68,10 @@ module.exports = {
 
         const dateVal = req.query.date;
         if (dateVal) {
-            const specificDate = new Date(dateVal);
-            filters.createdAt = specificDate.toISOString();
+            const specificDate = moment(dateVal).startOf('day');
+            const endOfDay = specificDate.clone().endOf('day');
+            
+            filters.createdAt = { $gte: specificDate.toDate(), $lt: endOfDay.toDate() };
         }
 
         const sort = req.query.sort;

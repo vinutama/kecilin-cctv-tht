@@ -25,7 +25,7 @@ module.exports = {
         }   
     },
     generateToken: function(user) {
-        return jwt.sign(user, JWT_SECRET, {expiresIn: '1h'});
+        return jwt.sign(user, JWT_SECRET, {expiresIn: '3h'});
     },
     verifyToken: function(token) {
         return jwt.verify(token, JWT_SECRET);

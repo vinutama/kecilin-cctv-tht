@@ -8,7 +8,7 @@ router.use(authenticate);
 // create new report
 router.post('/:cctvId', ReportController.add);
 // find specific report details
-router.get('/id', ReportController.findOne);
+router.get('/:id', ReportController.findOne);
 
 // find all reports with filters on specific CCTV
 router.get('/all/:cctvId', ReportController.findReportsByCctv);

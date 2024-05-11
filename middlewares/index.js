@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { verifyToken } = require('../helpers');
 const Report = require('../models/Report');
+const { TokenExpiredError } = require('jsonwebtoken');
 
 module.exports = {
     authenticate: function(req, res, next) {
@@ -19,12 +20,17 @@ module.exports = {
                         };
                         next();
                     } else {
-                        return res.status(401).json({
-                            message: 'Token expired'
+                        return res.status(404).json({
+                            message: 'User not founnd'
                         })
                     }
                 })
                 .catch((err) => {
+                    if (err instanceof TokenExpiredError) {
+                        return res.status(401).json({
+                            message: "Token expired"
+                        })
+                    }
                     return res.status(500).json({
                         message: err.message
                     })
@@ -55,11 +61,12 @@ module.exports = {
     },
     isReportOwner: function(req, res, next) {
         let role = req.currentUser.role;
+        let reportId = req.params.id;
         if (role === 'superadmin') {
             next();
         } else {
             Report
-                .findOne({owner: req.currentUser._id})
+                .findOne({owner: req.currentUser._id, _id: reportId})
                 .then((owner) => {
                     if(owner) {
                         next();

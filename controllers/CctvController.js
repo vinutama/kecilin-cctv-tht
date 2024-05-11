@@ -123,21 +123,22 @@ module.exports = {
         Cctv
             .findOne({_id: req.params.id})
             .then((cctv) => {
-                if (cctv) {
-                    if (cctv.status === 'inactive') {
-                        return Cctv
-                                .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
-                    } else {
-                        return res.status(400).json({message: "Cannot delete CCTV that still active"});
+                if (!cctv) {
+                    return res.status(404).json({ message: "CCTV not found" });
+                }
+                if (cctv.status !== 'inactive') {
+                    return res.status(400).json({ message: "Cannot delete CCTV that is still active" });
+                }
+                Cctv.findOneAndUpdate({ _id: req.params.id }, { isDeleted: true }, { new: true })
+                .then((removedCctv) => {
+                    if (removedCctv) {
+                        return res.status(200).json({message: "CCTV removed", data: removedCctv});
                     } 
-                }
-            })
-            .then((removedCctv) => {
-                if (removedCctv) {
-                    return res.status(200).json({message: "CCTV removed", data: removedCctv});
-                } else {
-                    return res.status(404).json({message: "CCTV not found"});
-                }
+                        return res.status(404).json({message: "CCTV not found"});
+                })
+                .catch((err) => {
+                    return res.status(500).json({message: err.message});
+                })
             })
             .catch((err) => {
                 return res.status(500).json({message: err.message});
