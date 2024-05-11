@@ -11,21 +11,21 @@ module.exports = {
             .create(newCctv)
             .then((cctv) => {
                 const resp = {model, area, ipAddress, status, createdAt, updatedAt} = cctv
-                res.status(201).json({message: "Success add new CCTV", data: resp});
+                return res.status(201).json({message: "Success add new CCTV", data: resp});
             })
             .catch((err) => {
-                err = err.errors;
-                badReqErr = res.status(400);
-                if (err.hasOwnProperty('model')) {
-                    badReqErr.json({message: err.model.message})
-                } else if (err.hasOwnProperty('area')) {
-                    badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: err.ipAddress.message})
-                } else if (err.hasOwnProperty('status')) {
-                    badReqErr.json({message: err.status.message})
+                const customErr = err.errors;
+                const badReqErr = res.status(400);
+                if (customErr.hasOwnProperty('model')) {
+                    return badReqErr.json({message: customErr.model.message})
+                } else if (customErr.hasOwnProperty('area')) {
+                    return badReqErr.json({message: customErr.area.message})
+                } else if (customErr.hasOwnProperty('ipAddress')) {
+                    return badReqErr.json({message: customErr.ipAddress.message})
+                } else if (customErr.hasOwnProperty('status')) {
+                    return badReqErr.json({message: customErr.status.message})
                 } else {
-                    res.status(500).json({message: err.message})
+                    return res.status(500).json({message: err.message})
                 }
             })
     },
@@ -66,10 +66,10 @@ module.exports = {
             .skip((page - 1) * pageLimit)
             .limit(pageLimit)
             .then((cctvs) => {
-                res.status(200).json({message: "CCTVs retrieved", data: cctvs});
+                return res.status(200).json({message: "CCTVs retrieved", data: cctvs});
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     },
     findOne: function (req, res) {
@@ -77,15 +77,15 @@ module.exports = {
             .findOne({_id: req.params.id})
             .then((cctv) => {
                 if (cctv) {
-                    res.status(200).json({message: "CCTV retrieved", data: cctv});
+                    return res.status(200).json({message: "CCTV retrieved", data: cctv});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "CCTV not found"
-                    })
+                    });
                 }
             })
             .catch((err) => {
-                res.status(500).json({
+                return res.status(500).json({
                     message: err.message
                 });
             })
@@ -96,26 +96,26 @@ module.exports = {
             .findOneAndUpdate({_id: req.params.id}, editCctv, {new: true, runValidators: true})
             .then((cctv) => {
                 if (cctv) {
-                    res.status(200).json({message: "Success edit CCTV", data: cctv});
+                    return res.status(200).json({message: "Success edit CCTV", data: cctv});
                 } else {
-                    res.status(404).json({
+                    return res.status(404).json({
                         message: "CCTV not found"
                     });
                 }
             })
             .catch((err) => {
-                err = err.errors;
-                badReqErr = res.status(400);
-                if (err.hasOwnProperty('model')) {
-                    badReqErr.json({message: err.model.message})
-                } else if (err.hasOwnProperty('area')) {
-                    badReqErr.json({message: err.area.message})
-                } else if (err.hasOwnProperty('ipAddress')) {
-                    badReqErr.json({message: err.ipAddress.message})
-                } else if (err.hasOwnProperty('status')) {
-                    badReqErr.json({message: err.status.message})
+                const customErr = err.errors;
+                const badReqErr = res.status(400);
+                if (customErr.hasOwnProperty('model')) {
+                    return badReqErr.json({message: customErr.model.message})
+                } else if (customErr.hasOwnProperty('area')) {
+                    return badReqErr.json({message: customErr.area.message})
+                } else if (customErr.hasOwnProperty('ipAddress')) {
+                    return badReqErr.json({message: customErr.ipAddress.message})
+                } else if (customErr.hasOwnProperty('status')) {
+                    return badReqErr.json({message: customErr.status.message})
                 } else {
-                    res.status(500).json({message: err.message})
+                    return res.status(500).json({message: err.message})
                 }
             })
     },
@@ -123,24 +123,25 @@ module.exports = {
         Cctv
             .findOne({_id: req.params.id})
             .then((cctv) => {
-                if (cctv) {
-                    if (cctv.status === 'Inactive') {
-                        return Cctv
-                                .findOneAndUpdate({_id: req.params.id}, {isDeleted: true}, {new: true})
-                    } else {
-                        res.status(400).json({message: "Cannot delete CCTV that still active"});
+                if (!cctv) {
+                    return res.status(404).json({ message: "CCTV not found" });
+                }
+                if (cctv.status !== 'inactive') {
+                    return res.status(400).json({ message: "Cannot delete CCTV that is still active" });
+                }
+                Cctv.findOneAndUpdate({ _id: req.params.id }, { isDeleted: true }, { new: true })
+                .then((removedCctv) => {
+                    if (removedCctv) {
+                        return res.status(200).json({message: "CCTV removed", data: removedCctv});
                     } 
-                }
-            })
-            .then((removedCctv) => {
-                if (removedCctv) {
-                    res.status(200).json({message: "CCTV removed", data: removedCctv});
-                } else {
-                    res.status(404).json({message: "CCTV not found"});
-                }
+                        return res.status(404).json({message: "CCTV not found"});
+                })
+                .catch((err) => {
+                    return res.status(500).json({message: err.message});
+                })
             })
             .catch((err) => {
-                res.status(500).json({message: err.message});
+                return res.status(500).json({message: err.message});
             })
     }       
 };

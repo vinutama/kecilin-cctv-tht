@@ -41,7 +41,7 @@ To run this app, follow this steps:
    cd kecilin-cctv-tht
    ```
 
-4. Create .Env file called `app.env` and fill the following:
+4. Create .env file called `app.env` and fill the following:
 
    ```env
     DB_NAME=You desired database name
@@ -58,7 +58,7 @@ To run this app, follow this steps:
     (must contains lower case, upper case, number and special character)
    ```
 
-5. Create .Env file called `db.env` and fill the following:
+5. Create .env file called `db.env` and fill the following:
 
    ```env
     MONGO_INITDB_ROOT_USERNAME=Default DB Admin user MongoDB
@@ -99,7 +99,7 @@ To run this app, follow this steps:
 Kecilin CCTV Management App API docs:
 
 By default, this app created one user admin.
-The credetianls is from your `app.env`
+The credetianls is based on value in your `app.env`
 
 ```
 ADMIN_USER
@@ -140,7 +140,7 @@ response = {
 #### **Add new user (POST /api/users)**
 
 ```js
-// Need Authenticate and Only Admin can add new User
+// Need Authenticate and Only admin can add new User
 requestHeaders = {Authorization: <adminToken>}
 
 requestBody = {
@@ -165,8 +165,8 @@ requestBody = {
   role: String,
   /*
   validation:
-      - optional by default: "User"
-      - if provided, validate ENUM ("Admin", "Maintainer", "User")
+      - optional by default: "maintainer"
+      - if provided, validate ENUM ("admin", "maintainer")
   */
 };
 
@@ -186,7 +186,7 @@ response = {
 #### **Add new CCTV (POST /api/cctv)**
 
 ```js
-// Need Authenticate and Only Admin role can register new CCTV
+// Need Authenticate and Only admin role can register new CCTV
 requestHeaders = {Authorization: <adminToken>}
 
 requestBody = {
@@ -210,8 +210,8 @@ requestBody = {
   status: String,
   /*
   validation:
-      - optional by default: "Inactive"
-      - if provided, validate ENUM ("Active", "Inactive")
+      - optional by default: "inactive"
+      - if provided, validate ENUM ("active", "inactive")
   */
   notes: String,
   /*
@@ -258,7 +258,7 @@ requestQuery = {
   status: String,
   /*
   Filter based on status (case-sensitive)
-  'Active', 'Inactive'
+  'active', 'inactive'
   */
   sort: String,
   /*
@@ -320,7 +320,7 @@ response = {
 #### **Edit CCTV data (PATCH /api/cctv)**
 
 ```js
-// Need Authenticate and Only Admin role can edit CCTV data
+// Need Authenticate and Only admin role can edit CCTV data
 requestHeaders = {Authorization: <adminToken>}
 
   // All request body is OPTIONAL
@@ -346,8 +346,8 @@ requestBody = {
   status: String,
   /*
   validation:
-      - optional by default: "Inactive"
-      - if provided, validate ENUM ("Active", "Inactive")
+      - optional by default: "inactive"
+      - if provided, validate ENUM ("active", "inactive")
   */
   notes: String,
   /*
@@ -374,11 +374,10 @@ response = {
 #### **Delete CCTV data (DELETE /api/cctv/:cctv_id)**
 
 - Validation rules:
-  - Id must be exist
-  - Can only delete when CCTV's status is Inactive
+  - Can only delete when CCTV's status is `inactive`
 
 ```js
-// Need Authenticate and Only Admin role can delete CCTV data
+// Need Authenticate and Only admin role can delete CCTV data
 requestHeaders = {Authorization: <adminToken>}
 
 response = {

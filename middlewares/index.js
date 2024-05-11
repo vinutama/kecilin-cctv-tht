@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const { verifyToken } = require('../helpers');
+const Report = require('../models/Report');
+const { TokenExpiredError } = require('jsonwebtoken');
 
 module.exports = {
     authenticate: function(req, res, next) {
@@ -18,40 +20,67 @@ module.exports = {
                         };
                         next();
                     } else {
-                        res.status(401).json({
-                            message: 'Token expired'
+                        return res.status(404).json({
+                            message: 'User not founnd'
                         })
                     }
                 })
                 .catch((err) => {
-                    res.status(500).json({
-                        message: `Internal server error ${err}`
+                    if (err instanceof TokenExpiredError) {
+                        return res.status(401).json({
+                            message: "Token expired"
+                        })
+                    }
+                    return res.status(500).json({
+                        message: err.message
                     })
                 })
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Missing token'
             })
         }
     },
-    isAdmin: function(req, res, next) {
-        if (req.currentUser.role === 'Admin') {
+    isSuperAdmin: function(req, res, next) {
+        if (req.currentUser.role == 'superadmin') {
             next();
         } else {
-            res.status(401).json({
+            return res.status(401).json({
+                message: 'Only Super Admin can perform this action'
+            });
+        }
+    },
+    isAdmin: function(req, res, next) {
+        if (req.currentUser.role == 'superadmin' || req.currentUser.role === 'admin') {
+            next();
+        } else {
+            return res.status(401).json({
                 message: 'Only Admin can perform this action'
             });
         }
     },
-    isMaintainer: function(req, res, next) {
-        let role = req.currentUser.role
-        if (role === 'Admin' || role || 'Maintainer') {
+    isReportOwner: function(req, res, next) {
+        let role = req.currentUser.role;
+        let reportId = req.params.id;
+        if (role === 'superadmin') {
             next();
         } else {
-            res.status(401).json({
-                message: `You don't have Maintainer role to perform this action`
-            })
+            Report
+                .findOne({owner: req.currentUser._id, _id: reportId})
+                .then((owner) => {
+                    if(owner) {
+                        next();
+                    } else {
+                        return res.status(401).json({message: "You don't have permission to perform this action"});
+                    }
+                })
+                .catch((err) => {
+                    return res.status(500).json({
+                        message: err.message
+                    })
+                })
         }
+
     }
 
 }

@@ -5,27 +5,27 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
     // create admin user
-    createAdminUser: async function() {
+    createSuperAdminUser: async function() {
         try {
             const existingAdmin = await User.findOne({username: ADMIN_USER});
             if (!existingAdmin) {    
                 const newUser = new User({
-                    name: 'admin',
+                    name: 'superadmin',
                     username: ADMIN_USER,
                     password: ADMIN_PASS,
-                    role: "Admin"
+                    role: "superadmin"
                 });
     
                 await newUser.save();
             } else {
-                console.log("User admin already exist, ignore this message.");
+                console.log("User superadmin already exist, ignore this message.");
             }
         } catch (err) {
             console.error('Error when creating admin user: ', err);
         }   
     },
     generateToken: function(user) {
-        return jwt.sign(user, JWT_SECRET, {expiresIn: '1h'});
+        return jwt.sign(user, JWT_SECRET, {expiresIn: '3h'});
     },
     verifyToken: function(token) {
         return jwt.verify(token, JWT_SECRET);
