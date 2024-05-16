@@ -23,7 +23,6 @@ cnetwork:
 	docker network create kecilin
 
 fresh-start:
-	rm -r mongo_db && \
 	make down && \
 	make prune && \
 	make build && \
